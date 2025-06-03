@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* General hover effect styles */
+.hover-effect::before,
+.hover-effect::after {
+  content: "";
+  background: #fff;
+  height: 0;
+  width: 0;
+  z-index: 1;
+  position: absolute;
+  -webkit-transition-duration: 0.5s !important;
+  -o-transition-duration: 0.5s;
+  transition-duration: 0.5s !important;
+}
+
+.hover-effect::before {
+  right: 0;
+  opacity: 0.7;
+  top: 0;
+}
+
+.hover-effect::after {
+  bottom: 0;
+  opacity: 0.7;
+  left: 0;
+}
+
+.hover-effect:hover::after,
+.hover-effect:hover::before {
+  height: 100%;
+  opacity: 0;
+  width: 100%;
+}
+
+/* Disable hover effect on touch devices */
+@media (hover: none) {
+
+  .hover-effect::before,
+  .hover-effect::after,
+  .hover-effect:hover::after,
+  .hover-effect:hover::before {
+    all: unset;
+    /* Removes all hover styles */
+  }
+}
+
+
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+
+/* whatsapp */
+@layer utilities {
+  .animate-custom-ping {
+    animation: customPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes customPing {
+
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+}
