@@ -163,7 +163,7 @@ const ProductDetails: React.FC<ProductProps> = ({
       {/* <h1 className="text-center text-4xl my-6 text-black font-Outfit">
         Product Details
       </h1> */}
-      <div className="flex flex-wrap pt-10 font-Outfit">
+      <div className="flex flex-wrap mx-auto container pt-10 font-Outfit">
         <ProductAttributes
           product={productData}
           selectedAttributes={selectedAttributes}

@@ -84,7 +84,7 @@ export default function Header(props: any) {
   const categoryq = searchParams?.get("category");
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-
+ const url = process.env.NEXT_PUBLIC_NEXTAUTH_URL
   useEffect(() => {
     if (path === "/checkout") {
       setLoading(false);
@@ -119,7 +119,28 @@ export default function Header(props: any) {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+ const handlelogout = async () => {
+    try {
+      // Sign out using NextAuth - this will clear the session and cookies
+      await signOut({
+        redirect: false,
+      });
 
+      // After successful logout, redirect to home page
+      // router.push("/");
+      toast.success("Log out successfully");
+      // Force a page refresh to clear any cached states
+      router.refresh();
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+  // useEffect(() => {
+  //   if (userInfo) {
+      
+  //     handleClientSignOut()
+  //   }
+  // },[])
   const { data: suggestions } = useSelector(
     (state: RootState) => state.productsdata.productsState
   );
@@ -315,13 +336,13 @@ export default function Header(props: any) {
       ),
     }));
   };
-
+ 
   const usernavigationconfig = [
     ...(userInfo?.email
       ? [
           {
             title: "Dashboard",
-            href: "http://localhost:3000/dashboard",
+            href: `${url}/dashboard`,
             sections: [],
           },
           {
@@ -339,7 +360,7 @@ export default function Header(props: any) {
 
           {
             title: "My Orders",
-            href: "http://localhost:3000/order-history",
+            href:`${url}/order-history`,
             sections: [],
           },
         ]
@@ -348,7 +369,7 @@ export default function Header(props: any) {
   const navigationConfig = [
     {
       title: "About us",
-      href: "http://localhost:3000/about-us",
+      href: `${url}/about-us`,
       sections: [],
     },
 
@@ -358,23 +379,23 @@ export default function Header(props: any) {
       sections: Array.isArray(categoriesTree)
         ? categoriesTree.map((category: any) => ({
             sectionTitle: category?.name,
-            sectionHref: `http://localhost:3000/shop?category=${category?.slug}`,
+            sectionHref: `${url}/shop?category=${category?.slug}`,
             links:
               category?.subCategories?.map((sub: any) => ({
                 linkTitle: sub?.name,
-                linkHref: `http://localhost:3000/shop?category=${sub?.slug}`,
+                linkHref: `${url}/shop?category=${sub?.slug}`,
               })) || [],
           }))
         : [],
     },
     {
       title: "New Arrivals",
-      href: "http://localhost:3000/shop?new-arrivals=true",
+      href: `${url}/shop?new-arrivals=true`,
       sections: [],
     },
     {
       title: "Sale",
-      href: "http://localhost:3000/shop?sale=true",
+      href: `${url}/shop?sale=true`,
       sections: [],
     },
   ];
@@ -434,29 +455,11 @@ export default function Header(props: any) {
       router.push("/checkout"); // Navigate to the billing page
     }
   };
-  const handlelogout = async () => {
-    try {
-      // Sign out using NextAuth - this will clear the session and cookies
-      await signOut({
-        redirect: false,
-      });
-
-      // After successful logout, redirect to home page
-      // router.push("/");
-      toast.success("Log out successfully");
-      // Force a page refresh to clear any cached states
-      router.refresh();
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
-
+ 
   return (
-    <div className=" sticky top-0 z-50">
+    
+    <div className=" sticky top-0 z-30 lg:z-[70]">
       <header className="  font-Outfit" ref={headerRef}>
-        {/* <div className="font-Outfit text-center py-4 bg-black text-white">
-          <h1>Free Shipping On Orders Over &#8377;250</h1>
-        </div> */}
         {/* <div
           className={` font-Outfit text-center py-0 bg-black text-white transition-transform duration-300 translate-y-0 text-sm`}
           dangerouslySetInnerHTML={{ __html: headerTop?.heading }}
@@ -505,11 +508,11 @@ export default function Header(props: any) {
                   >
                     <Search className="h-6 w-6" />
                   </button>
-                  <button className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
+                  {/* <button className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
                     <Link href="/login">
                       <User className="h-6 w-6" />
                     </Link>
-                  </button>
+                  </button> */}
                   <button
                     className="text-gray-700 relative hover:text-gray-900 transition-colors duration-200"
                     onClick={() => {
@@ -531,11 +534,11 @@ export default function Header(props: any) {
                 >
                   <Search className="h-5 w-5" />
                 </button>
-                <button className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
+                {/* <button className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
                   <Link href="/login">
                     <User className="h-6 w-6" />
                   </Link>
-                </button>
+                </button> */}
                 <button
                   className="text-gray-700 relative hover:text-gray-900 transition-colors duration-200"
                   onClick={() => {
@@ -594,7 +597,7 @@ export default function Header(props: any) {
         )}
 
         <div
-          className={`fixed top-0 right-0 bottom-0 w-full sm:w-80 bg-white z-50 shadow-lg transform transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 right-0 bottom-0 w-full sm:w-80 bg-white z-[70] shadow-lg transform transition-transform duration-300 ease-in-out ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -615,7 +618,7 @@ export default function Header(props: any) {
               </button>
             </div>
           </div>
-          <div className="overflow-y-auto h-full pb-20">
+          <div className="overflow-y-auto h-full pb-20 z-50">
             {navigation?.map((item) => (
               <div key={item?.title} className="border-b">
                 {item?.sections?.length > 0 ? (
@@ -769,16 +772,16 @@ export default function Header(props: any) {
                 )}
               </div>
             ))}
-            <div className="w-full px-2">
+            {/* <div className="w-full px-2">
               <button
                 className="bg-black text-white w-full py-2 px-2 rounded-sm  mt-4"
                 onClick={() => {
                   userInfo?.email ? handlelogout() : router.push("/login");
                 }}
               >
-                {!userInfo?.email ? "LOG IN" : "LOG OUT"}
+                {!userInfo?.email ? "LOG IN" : "LOG OUT"}/
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>
@@ -812,7 +815,7 @@ export default function Header(props: any) {
                 <div className="flex flex-col items-center justify-center h-full">
                   <div className="relative">
                     <ShoppingCart size={80} className="text-gray-200" />
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-pink-700 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#AA0A30] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
                       0
                     </div>
                   </div>
@@ -821,7 +824,7 @@ export default function Header(props: any) {
                   </p>
                   <button
                     onClick={() => setShowCart(false)}
-                    className="mt-4 bg-pink-700 text-white px-6 py-3 rounded-xl hover:bg-pink-800 transition-all duration-200 shadow-sm hover:shadow"
+                    className="mt-4 bg-[#AA0A30] text-white px-6 py-3 rounded-xl hover:bg-pink-800 transition-all duration-200 shadow-sm hover:shadow"
                   >
                     Continue Shopping
                   </button>

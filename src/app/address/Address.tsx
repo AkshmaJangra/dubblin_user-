@@ -71,7 +71,6 @@ const AddressFormPopup: React.FC<{
     if (Address) {
       return {
         firstName: Address.firstname || "",
-        lastName: Address.lastname || "",
         company: Address.company || "",
         address1: Address.address1 || "",
         address2: Address.address2 || "",
@@ -115,7 +114,7 @@ const AddressFormPopup: React.FC<{
     if (!name.trim()) {
       setFormErrors((prev) => ({
         ...prev,
-        firstName: "First name is required",
+        firstName: "name is required",
       }));
       return false;
     }
@@ -123,58 +122,33 @@ const AddressFormPopup: React.FC<{
     if (name.length < 2) {
       setFormErrors((prev) => ({
         ...prev,
-        firstName: "First name must be at least 2 characters",
+        firstName: "name must be at least 2 characters",
       }));
       return false;
     }
 
-    if (name.includes(" ")) {
-      setFormErrors((prev) => ({
-        ...prev,
-        firstName: "First name cannot contain spaces",
-      }));
-      return false;
-    }
+    // if (name.includes(" ")) {
+    //   setFormErrors((prev) => ({
+    //     ...prev,
+    //     firstName: "name cannot contain spaces",
+    //   }));
+    //   return false;
+    // }
 
-    if (!/^[a-zA-Z'-]+$/.test(name)) {
-      setFormErrors((prev) => ({
-        ...prev,
-        firstName:
-          "First name can only contain letters, hyphens and apostrophes",
-      }));
-      return false;
-    }
+    // if (!/^[a-zA-Z'-]+$/.test(name)) {
+    //   setFormErrors((prev) => ({
+    //     ...prev,
+    //     firstName:
+    //       "name can only contain letters, hyphens and apostrophes",
+    //   }));
+    //   return false;
+    // }
 
     setFormErrors((prev) => ({ ...prev, firstName: "" }));
     return true;
   };
 
-  const validateLastName = (name: string) => {
-    if (!name.trim()) {
-      setFormErrors((prev) => ({ ...prev, lastName: "Last name is required" }));
-      return false;
-    }
-
-    if (name.trim().length < 2) {
-      setFormErrors((prev) => ({
-        ...prev,
-        lastName: "Last name must be at least 2 characters",
-      }));
-      return false;
-    }
-
-    if (!/^[a-zA-Z\s-']+$/.test(name)) {
-      setFormErrors((prev) => ({
-        ...prev,
-        lastName:
-          "Last name can only contain letters, spaces, hyphens and apostrophes",
-      }));
-      return false;
-    }
-
-    setFormErrors((prev) => ({ ...prev, lastName: "" }));
-    return true;
-  };
+  
 
   const validatePhone = (phone: string) => {
     if (!phone.trim()) {
@@ -269,7 +243,7 @@ const AddressFormPopup: React.FC<{
 
     // Validate the field as the user types
     if (name === "firstName") validateFirstName(value);
-    if (name === "lastName") validateLastName(value);
+    // if (name === "lastName") validateLastName(value);
     if (name === "address1") validateAddress(value);
     if (name === "phone") validatePhone(value);
   };
@@ -277,14 +251,14 @@ const AddressFormPopup: React.FC<{
   const handleNewAddress = (AddressId: any): void => {
     // Validate all fields
     const isFirstNameValid = validateFirstName(formData.firstName);
-    const isLastNameValid = validateLastName(formData.lastName);
+    // const isLastNameValid = validateLastName(formData.lastName);
     const isAddressValid = validateAddress(formData.address1);
     const isPhoneValid = validatePhone(formData.phone);
     const isCountryStateValid = validateCountryState();
 
     if (
       !isFirstNameValid ||
-      !isLastNameValid ||
+      
       !isAddressValid ||
       !isPhoneValid ||
       !isCountryStateValid
@@ -296,7 +270,6 @@ const AddressFormPopup: React.FC<{
     if (AddressId) {
       if (
         formData.firstName === "" ||
-        formData.lastName === "" ||
         formData.address1 === "" ||
         // idformdata.city_id === "" ||
         idformdata.country_id === "" ||
@@ -332,7 +305,6 @@ const AddressFormPopup: React.FC<{
     } else {
       if (
         formData.firstName === "" ||
-        formData.lastName === "" ||
         formData.address1 === "" ||
         // idformdata.city_id === "" ||
         idformdata.country_id === "" ||
@@ -420,10 +392,10 @@ const AddressFormPopup: React.FC<{
         </div>
 
         <form className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
             <div className="space-y-2">
               <label className="text-gray-700 font-medium block">
-                First Name<span className="text-red-500">*</span>
+                Full Name<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -440,7 +412,7 @@ const AddressFormPopup: React.FC<{
                 </p>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 hidden">
               <label className="text-gray-700 font-medium block">
                 Last Name<span className="text-red-500">*</span>
               </label>
@@ -453,11 +425,7 @@ const AddressFormPopup: React.FC<{
                   formErrors.lastName ? "border-red-500" : "border-gray-300"
                 } p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
               />
-              {formErrors.lastName && (
-                <p className="text-red-500 text-sm mt-1">
-                  {formErrors.lastName}
-                </p>
-              )}
+            
             </div>
           </div>
 
@@ -775,13 +743,13 @@ const Address: React.FC<UserInfoProps> = (props) => {
     }
   };
 
-  const handleDelete = (address) => {
+  const handleDelete = (address:any) => {
     // Handle cancel logic here
     setAddress(address);
     setIsDelete(true);
   };
 
-  const handleDeliver = (adressId) => {
+  const handleDeliver = (adressId:any) => {
     // Handle cancel logic here
     dispatch(
       UpdateShippingAddress({

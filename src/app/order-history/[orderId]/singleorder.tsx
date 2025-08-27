@@ -15,7 +15,7 @@ import jsPDF from "jspdf";
 import moment from "moment";
 
 const Singleorder = ({ orderDetails }) => {
-  const formatDate = (dateString) => {
+  const formatDate = (dateString:any) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -23,7 +23,7 @@ const Singleorder = ({ orderDetails }) => {
     });
   };
 
-  
+  console.log('ordeer deatils data is ',orderDetails)
 // Helper function to calculate subtotal
 const calculateSubtotal = () => {
   if (!orderDetails?.products || orderDetails.products.length === 0) {
@@ -249,8 +249,9 @@ const handleDownloadInvoice = async () => {
         <div style="background-color: #f8f8f8; padding: 15px 30px; border-bottom: 1px solid #e2e2e2;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <p style="margin: 0; font-size: 14px;">Plot No 568, Udyog Vihar, Phase-5</p>
-              <p style="margin: 3px 0 0; font-size: 14px;">Gurgaon Hr 122016, India</p>
+           
+              <p style="margin: 0; font-size: 14px;"> PLOT NO. -27 AND 27-B,KHASRA NO. 46/23,Near M.S. VATIKA,NILOTHI EXTENSION</p>
+              <p style="margin: 3px 0 0; font-size: 14px;"> NEW DELHI-110041, India</p>
             </div>
             <div style="text-align: right;">
               <p style="margin: 0; font-size: 14px;">+91 7838388836</p>
@@ -258,34 +259,21 @@ const handleDownloadInvoice = async () => {
             </div>
           </div>
         </div>
-
         <!-- Customer Info Section - THREE COLUMNS LAYOUT -->
         <div style="padding: 20px 30px;">
           <div class="info-section">
-            <!-- Bill To Information -->
-            <div class="info-column">
-              <h4 class="section-title">BILL TO</h4>
-              <div class="address-card">
-                <p style="font-weight: 600; margin: 0 0 8px; font-size: 16px;">${orderDetails?.billingAddress?.firstname || orderDetails?.user?.name}
-                    ${orderDetails?.billingAddress?.lastname || orderDetails?.user?.last_name}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.billingAddress?.phone || orderDetails?.shippingAddress?.phone}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.billingAddress?.address1 ||orderDetails?.shippingAddress?.address1 }</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.billingAddress?.address2 ||orderDetails?.shippingAddress?.address2 }</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.billingAddress?.state?.name || ""} ${orderDetails?.billingAddress?.country?.name || ""} ${orderDetails?.billingAddress?.pincode || ""}</p>
-                <p style="margin: 12px 0 4px; font-size: 14px;">✉️ ${orderDetails?.user?.email || ""}</p>
-              </div>
-            </div>
+           
 
             <!-- Ship To Information -->
             <div class="info-column">
               <h4 class="section-title">SHIP TO</h4>
               <div class="address-card">
-                <p style="font-weight: 600; margin: 0 0 8px; font-size: 16px;">${orderDetails?.user?.name || ""}
+                <p style="font-weight: 600; margin: 0 0 8px; font-size: 16px;">${orderDetails?.user?.name ||orderDetails?.addressData?.firstname}
                     ${orderDetails?.user?.last_name || ""}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.phone || ""}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.address1 || ""}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.address2 || ""}</p>
-                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.state?.name || ""} ${orderDetails?.shippingAddress?.country?.name || ""} ${orderDetails?.shippingAddress?.pincode || ""}</p>
+                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.phone ||orderDetails?.addressData?.phone}</p>
+                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.address1 ||orderDetails?.addressData?.address1}</p>
+                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.address2 ||orderDetails?.addressData?.address2}</p>
+                <p style="margin: 4px 0; font-size: 14px;">${orderDetails?.shippingAddress?.state?.name ||orderDetails?.addressData?.state?.name} ${orderDetails?.shippingAddress?.pincode ||orderDetails?.addressData?.pinCode}</p>
               </div>
             </div>
 
@@ -698,7 +686,7 @@ const handleDownloadInvoice = async () => {
 
         {/* Footer with Address and Total */}
         <div className="bg-slate-50 p-4 sm:p-6 md:p-8 border-t border-slate-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Delivery Address */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-slate-800 font-semibold mb-3 flex items-center gap-2">
@@ -706,61 +694,23 @@ const handleDownloadInvoice = async () => {
                 Delivery Address
               </h3>
               <div className="text-slate-600 space-y-1">
-                <p className="font-medium text-slate-800">
-                  {orderDetails?.user?.name} {orderDetails?.user?.last_name}
+                <p className="font-medium text-slate-800">  
+                  {orderDetails?.user?.name||orderDetails?.addressData?.firstname } {orderDetails?.user?.last_name}
                 </p>
                 <p className="font-medium text-slate-800">
-                  {orderDetails?.shippingAddress?.phone}
+                  {orderDetails?.shippingAddress?.phone||orderDetails?.addressData?.phone}
                 </p>
-                <p>{orderDetails?.shippingAddress?.address1}</p>
-                <p>{orderDetails?.shippingAddress?.address2}</p>
+                <p>{orderDetails?.shippingAddress?.address1||orderDetails?.addressData?.address1}</p>
+                <p>{orderDetails?.shippingAddress?.address2||orderDetails?.addressData?.address2}</p>
                 <p>
-                  {orderDetails?.shippingAddress?.state?.name || ""}{" "}
-                  {orderDetails?.shippingAddress?.country?.name || ""}{" "}
-                  {orderDetails?.shippingAddress?.pincode || ""}
+                  {orderDetails?.shippingAddress?.state?.name || orderDetails?.addressData?.state?.name}{" "}
+                  {orderDetails?.shippingAddress?.pincode ||orderDetails?.addressData?.pinCode}
                 </p>
               </div>
             </div>
 
             {/* Billing Address */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <h3 className="text-slate-800 font-semibold mb-3 flex items-center gap-2">
-                <User className="h-4 w-4 text-slate-600" />
-                Billing Address
-              </h3>
-              {orderDetails?.billingAddress ? (
-                <div className="text-slate-600 space-y-1">
-                  <p className="font-medium text-slate-800">
-                    {orderDetails?.billingAddress?.firstname}{" "}
-                    {orderDetails?.billingAddress?.lastname}
-                  </p>
-                  <p>{orderDetails?.billingAddress?.address1}</p>
-                  <p>{orderDetails?.billingAddress?.address2}</p>
-                  <p>
-                    {orderDetails?.billingAddress?.state?.name}{" "}
-                    {orderDetails?.billingAddress?.country?.name}{" "}
-                    {orderDetails?.billingAddress?.pincode}
-                  </p>
-                </div>
-              ) : (
-                <div className="text-slate-600 space-y-1">
-                  <p className="font-medium text-slate-800">
-                    {orderDetails?.user?.name} {orderDetails?.user?.last_name}
-                  </p>
-                  <p className="font-medium text-slate-800">
-                    {orderDetails?.shippingAddress?.phone}
-                  </p>
-                  <p>{orderDetails?.shippingAddress?.address1}</p>
-                  <p>{orderDetails?.shippingAddress?.address2}</p>
-                  <p>
-                    {orderDetails?.shippingAddress?.state?.name || ""}{" "}
-                    {orderDetails?.shippingAddress?.country?.name || ""}{" "}
-                    {orderDetails?.shippingAddress?.pincode || ""}
-                  </p>
-                </div>
-              )}
-            </div>
-
+          
             {/* Payment Information */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-slate-800 font-semibold mb-3 flex items-center gap-2">

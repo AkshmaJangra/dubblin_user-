@@ -140,14 +140,14 @@ const Hero: React.FC<{ slidersdata: Banner[] }> = ({ slidersdata: unsortedData }
         {/* Navigation Buttons */}
         <button
           onClick={handlePrevSlide}
-          className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 text-white"
+          className="absolute left-2 sm:left-4 z-40 top-1/2 transform -translate-y-1/2 text-white"
           aria-label="Previous slide"
         >
           <ChevronLeft className="w-10 h-10 lg:w-20 lg:h-20" />
         </button>
         <button
           onClick={handleNextSlide}
-          className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 text-white"
+          className="absolute right-2 sm:right-4 z-40 top-1/2 transform -translate-y-1/2 text-white"
           aria-label="Next slide"
         >
           <ChevronRight className="w-10 h-10 lg:w-20 lg:h-20" />
@@ -220,14 +220,14 @@ const Hero: React.FC<{ slidersdata: Banner[] }> = ({ slidersdata: unsortedData }
         {/* Navigation Buttons */}
         <button
           onClick={handlePrevSlide}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white"
+          className="absolute left-2 top-1/2 z-20 transform -translate-y-1/2 text-white"
           aria-label="Previous slide"
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
         <button
           onClick={handleNextSlide}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white"
+          className="absolute right-2 top-1/2 z-20 transform -translate-y-1/2 text-white"
           aria-label="Next slide"
         >
           <ChevronRight className="w-8 h-8" />

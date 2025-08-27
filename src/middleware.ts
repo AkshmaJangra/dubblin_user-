@@ -2,6 +2,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import path from 'path';
 
 export async function middleware(request: NextRequest) {
   // Get the pathname of the request
@@ -12,7 +13,7 @@ export async function middleware(request: NextRequest) {
   const isPublicPath = publicPaths.includes(pathName);
 
   // Protected paths that require authentication
-  const protectedPaths = ['/dashboard', '/personal-info', '/order-history', '/address', '/order-success'];
+  const protectedPaths = ['/dashboard', '/personal-info', '/order-history', '/address'];
 
   if (!pathName.startsWith('/api')) {
     try {
@@ -37,10 +38,15 @@ export async function middleware(request: NextRequest) {
       // For protected routes, redirect to login with callbackUrl if not logged in
       if (protectedPaths.includes(pathName) && !loggedIn) {
         // Create a login URL with the current path as the callback URL
-        const loginUrl = new URL('/login', process.env.NEXTAUTH_URL);
+        const loginUrl = new URL('/', process.env.NEXTAUTH_URL);
         loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search);
 
         return NextResponse.redirect(loginUrl);
+      }
+      if (pathName === '/login' || pathName === '/register' || pathName === '/verify' || pathName === '/forget-password') {
+        // If user is not logged in and trying to access order-success page,
+        // redirect them to login page
+        return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error: any) {
       console.error(error.stack);

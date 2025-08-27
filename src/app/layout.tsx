@@ -17,6 +17,10 @@ import { getHomeFooter } from "../lib/repos/footer";
 import { getHeaderTop } from "../lib/repos/headertopRepo";
 import Script from "next/script";
 import WhatsAppButton from "./Components/WhatsAppButton";
+import { cookies } from "next/headers";
+import { signOut } from "next-auth/react";
+import ForceLogoutTrigger from "./Components/ForceLogOut";
+// import Offer from "./Components/Offer";
 // Define custom fonts using next/font/local
 const Outfit = localFont({
   src: "./fonts/Outfit-VariableFont_wght.ttf",
@@ -43,7 +47,7 @@ interface RootLayoutProps {
 
 const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
   const session = await getServerSession();
-
+ 
   const footerdata = await getHomeFooter();
 
   const settingsData = await getSettings();
@@ -54,18 +58,33 @@ const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
     <html lang="en">
       <head>
         <title>Dubblin</title>
-        <meta name="description" content="Dubblin.com" />
         <link rel="icon" href="/logo.png" />
+        
       </head>
       <body
         className={`${Outfit.variable} ${Racing.variable} ${Cinzel.variable} antialiased`}
       >
         <StoreProvider>
           <Providers session={session}>
+            {/* Google Analytics */}
+            <Script 
+              strategy="afterInteractive" 
+              src={`https://www.googletagmanager.com/gtag/js?id=G-1ZQHD9LK5V`}
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-1ZQHD9LK5V');
+              `}
+            </Script>
+           
             <Script
               src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_APP_SITE_KEY}`}
               strategy="beforeInteractive"
             />
+            {/* <Offer/> */}
             <Header
               data={settingsData}
               userInfo={session?.user}
@@ -75,6 +94,7 @@ const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
             <Footer footerdata={footerdata} />
             <WhatsAppButton /> {/* ✅ Add floating icon here */}
             <Toaster richColors position="bottom-center" />
+            <ForceLogoutTrigger/>
           </Providers>
         </StoreProvider>
       </body>

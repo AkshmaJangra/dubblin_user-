@@ -205,9 +205,9 @@ export const fetchStateList = createAsyncThunk<
     'State/fetchStateList',
     async (input, { dispatch, rejectWithValue }) => {
         try {
-            const { country } = input || {};
             dispatch(fetchStateStart());
-            const response = await axios.get(`/state/all?countryId=${country}`);
+            const response = await axios.get(`/state/all?countryId=101`);
+            console.log('response of state api', response?.data);
             if (response?.data?.success) {
                 dispatch(fetchStateListSuccess(response?.data?.allStateList));
                 return response.data;

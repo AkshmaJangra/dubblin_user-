@@ -227,13 +227,11 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
   const [minsStockValue, setMinStockValue] = useState(0);
   const [deafultqutantity, setdeafultqutantity] = useState(1);
   const [maxbuyitem, setmaxbuyitem] = useState(1);
-
   const isOutOfStock = useMemo(() => {
     if (product?.maxorder) {
       setMaxStockStatus(true);
       setMaxStockValue(product?.maxorder_value ? product.maxorder_value : 0);
     }
-
     if (product?.maxorder == false) {
       setMaxStockStatus(false);
     }
@@ -252,13 +250,12 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
     let returnstatus = false;
     let stockstatusvalue = false;
     let stockmainvalue = 0;
-
     if (product?.stockManagement?.stock_management === true) {
       if (
-        product?.product_type === "variableproduct" &&
-        product?.stockManagement?.stock_management_level === "product_level"
+        product?.productype?.trim() === "variableproduct" &&
+        product?.stockManagement?.stock_management_level.trim() === "product_level"
       ) {
-        const isStockStatusValid = product?.stock_status === "true";
+        const isStockStatusValid = product?.stock_status;
         setStockStatus(isStockStatusValid);
         setStockValue(product?.stock_value ? product.stock_value : 0);
         stockstatusvalue = isStockStatusValid;
@@ -268,7 +265,6 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
           matchingVariation?.stock_status === true ||
           matchingVariation?.stock_status === "true";
         setStockStatus(isStockStatusValid);
-      
         stockstatusvalue = isStockStatusValid;
         setStockValue(
           matchingVariation?.totalStock &&
@@ -276,17 +272,20 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
             ? matchingVariation.totalStock
             : 0
         );
+     
         stockmainvalue =
           matchingVariation?.totalStock &&
-          matchingVariation?.totalStock !== null
+            matchingVariation?.totalStock !== null
             ? matchingVariation.totalStock
             : 0;
       }
       if (stockstatusvalue === true) {
         if (stockmainvalue <= 0) {
+          
           returnstatus = true;
         } else {
           returnstatus = false;
+        
         }
       } else {
         returnstatus = true;
@@ -324,7 +323,7 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
       <div className="w-full md:w-1/2 mb-6 md:mb-0 px-0 md:px-5">
         <div className="relative overflow-hidden bg-gray-50 rounded-2xl p-4 flex items-center justify-center aspect-square">
           <button
-            className="absolute left-6 top-1/2 z-50 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+            className="absolute left-6 z-10 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
             onClick={handlePrevImage}
           >
             <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -363,11 +362,10 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
               <button
                 key={index}
                 ref={(el) => (imageRefs.current[index] = el)}
-                className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all duration-200 ${
-                  currentImageIndex === index
-                    ? "ring-2 ring-pink-500 shadow-lg transform scale-105"
-                    : "hover:ring-2 hover:ring-pink-200"
-                }`}
+                className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all duration-200 ${currentImageIndex === index
+                  ? "ring-2 ring-pink-500 shadow-lg transform scale-105"
+                  : "hover:ring-2 hover:ring-pink-200"
+                  }`}
                 onClick={() => setCurrentImageIndex(index)}
               >
                 <img
@@ -412,9 +410,8 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
             <div className="space-y-1">
               <p className="text-sm text-gray-500">Availability</p>
               <p
-                className={`font-medium ${
-                  isOutOfStock ? "text-red-600" : "text-green-600"
-                }`}
+                className={`font-medium ${isOutOfStock ? "text-red-600" : "text-green-600"
+                  }`}
               >
                 {isOutOfStock ? "Out of stock" : "In stock"}
               </p>
@@ -440,12 +437,11 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
                 <button
                   key={value?._id}
                   onClick={() => handleAttributeClick(item, value)}
-                  className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                    selectedAttributes[item?.type?.name.toLowerCase()] ===
+                  className={`px-4 py-2 rounded-lg transition-all duration-200 ${selectedAttributes[item?.type?.name.toLowerCase()] ===
                     value?._id
-                      ? "bg-pink-100 text-pink-700 ring-2 ring-pink-500"
-                      : "bg-white text-gray-700 hover:bg-gray-50 ring-1 ring-gray-200"
-                  }`}
+                    ? "bg-pink-100 text-pink-700 ring-2 ring-pink-500"
+                    : "bg-white text-gray-700 hover:bg-gray-50 ring-1 ring-gray-200"
+                    }`}
                 >
                   <div className="flex items-center space-x-2">
                     {["colour", "colours", "color", "colors"].includes(
@@ -468,14 +464,30 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
 
         <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200">
           <div className="bg-gray-50 p-6 flex items-center justify-between">
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-gray-900">
-                ₹{currentPrice?.toFixed(2)}
-              </p>
-              {oldPrice && (
-                <p className="text-sm text-gray-500 line-through mt-1">
-                  ₹{oldPrice.toFixed(2)}
+
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">
+                  ₹{currentPrice?.toFixed(2)}
                 </p>
+                {oldPrice && currentPrice < oldPrice && (
+                  <span className="bg-red-100 text-[#AA0A30] text-xs font-medium px-2 py-0.5 rounded">
+                    Save ₹{(oldPrice - currentPrice).toFixed(2)}
+                  </span>
+                )}
+              </div>
+
+              {oldPrice && (
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-sm text-gray-500 line-through">
+                    ₹{oldPrice.toFixed(2)}
+                  </p>
+                  {currentPrice < oldPrice && (
+                    <p className="text-sm text-[#AA0A30]">
+                      ({Math.round(((oldPrice - currentPrice) / oldPrice) * 100)}% off)
+                    </p>
+                  )}
+                </div>
               )}
             </div>
             {!isOutOfStock && (
@@ -484,17 +496,16 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
                   onClick={() =>
                     setQuantity((q) =>
                       product?.stockManagement?.stock_management === true ||
-                      product?.minorder == true
+                        product?.minorder == true
                         ? Math.max(deafultqutantity, q - 1)
                         : Math.max(1, q - 1)
                     )
                   }
-                  className={`w-8 h-8 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 transition-colors ${
-                    product?.stockManagement?.stock_management === true &&
+                  className={`w-8 h-8 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 transition-colors ${product?.stockManagement?.stock_management === true &&
                     quantity === (deafultqutantity ?? 1)
-                      ? " text-gray-400"
-                      : " hover:bg-gray-200 text-gray-900"
-                  }`}
+                    ? " text-gray-400"
+                    : " hover:bg-gray-200 text-gray-900"
+                    }`}
                 >
                   -
                 </button>
@@ -505,17 +516,16 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
                   onClick={() =>
                     setQuantity((q) =>
                       product?.stockManagement?.stock_management === true ||
-                      product?.maxorder == true
+                        product?.maxorder == true
                         ? Math.min(maxbuyitem, q + 1)
                         : q + 1
                     )
                   }
-                  className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                    product?.stockManagement?.stock_management === true &&
+                  className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${product?.stockManagement?.stock_management === true &&
                     quantity === maxbuyitem
-                      ? "bg-gray-100 text-gray-400"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-                  }`}
+                    ? "bg-gray-100 text-gray-400"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+                    }`}
                 >
                   +
                 </button>

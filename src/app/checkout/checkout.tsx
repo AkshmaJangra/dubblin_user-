@@ -36,8 +36,10 @@ import { useAppDispatch } from "../../lib/hooks";
 import { AppDispatch } from "../../lib/store";
 import { fetchCartItemsData } from "../../lib/AllSlices/getCartItemsSlice";
 import { Divide } from "lucide-react";
-// import { colourOptions } from '../data';
 
+let SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_APP_SITE_KEY || "";
+// import { colourOptions } from '../data';
+console.log('site keby', SITE_KEY);
 interface RootState {
   cart?: {
     cartlist: CartItem[];
@@ -84,6 +86,7 @@ const DeletePopup: React.FC<{
     });
   };
 
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg relative p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -127,7 +130,6 @@ const AddressFormPopup: React.FC<{
   isBilling?: boolean;
 }> = ({ isOpen, onClose, Address, isEditing, userId, isBilling }) => {
   if (!isOpen) return null;
-console.log('isBilling.......1',isBilling)
   const { countriesListState, StateListState, CitiesListState } = useSelector(
     (state: RootState) => state.shippingAddress
   );
@@ -166,7 +168,7 @@ console.log('isBilling.......1',isBilling)
 
   const [formErrors, setFormErrors] = useState({
     firstName: "",
-    lastName: "",
+
     address1: "",
     address2: "",
     postalCode: "",
@@ -179,24 +181,13 @@ console.log('isBilling.......1',isBilling)
   const validateFirstName = (name: string) => {
     if (!name.trim()) {
       setFormErrors(prev =>
-        ({ ...prev, firstName: "First name is required" }))
+        ({ ...prev, firstName: "name is required" }))
       return false
     }
 
     if (name.length < 2) {
       setFormErrors(prev =>
-        ({ ...prev, firstName: "First name must be at least 2 characters" }))
-      return false
-    }
-
-    if (name.includes(" ")) {
-      setFormErrors(prev =>
-        ({ ...prev, firstName: "First name cannot contain spaces" }))
-      return false
-    }
-
-    if (!/^[a-zA-Z'-]+$/.test(name)) {
-      setFormErrors(prev => ({ ...prev, firstName: "First name can only contain letters, hyphens and apostrophes" }))
+        ({ ...prev, firstName: "name must be at least 2 characters" }))
       return false
     }
 
@@ -205,22 +196,6 @@ console.log('isBilling.......1',isBilling)
   }
 
   const validateLastName = (name: string) => {
-    if (!name.trim()) {
-      setFormErrors(prev => ({ ...prev, lastName: "Last name is required" }))
-      return false
-    }
-
-    if (name.trim().length < 2) {
-      setFormErrors(prev => ({ ...prev, lastName: "Last name must be at least 2 characters" }))
-      return false
-    }
-
-  
-
-    if (!/^[a-zA-Z\s-']+$/.test(name)) {
-      setFormErrors(prev => ({ ...prev, lastName: "Last name can only contain letters, spaces, hyphens and apostrophes" }))
-      return false
-    }
 
     setFormErrors(prev => ({ ...prev, lastName: "" }))
     return true
@@ -243,7 +218,7 @@ console.log('isBilling.......1',isBilling)
     return true
   }
 
-  const validateAddress = (address) => {
+  const validateAddress = (address: any) => {
     if (!address.trim()) {
       setFormErrors(prev => ({ ...prev, address1: "Address is required" }))
       return false
@@ -313,7 +288,7 @@ console.log('isBilling.......1',isBilling)
 
     // Validate the field as the user types
     if (name === "firstName") validateFirstName(value)
-    if (name === "lastName") validateLastName(value)
+    // if (name === "lastName") validateLastName(value)
     if (name === "address1") validateAddress(value)
     if (name === "phone") validatePhone(value)
   };
@@ -321,22 +296,21 @@ console.log('isBilling.......1',isBilling)
   const handleNewAddress = (AddressId: any): void => {
     // Validate all fields
     const isFirstNameValid = validateFirstName(formData.firstName)
-    const isLastNameValid = validateLastName(formData.lastName)
+    // const isLastNameValid = validateLastName(formData.lastName)
     const isAddressValid = validateAddress(formData.address1)
     const isPhoneValid = validatePhone(formData.phone)
     const isCountryStateValid = validateCountryState()
 
-    if (!isFirstNameValid || !isLastNameValid || !isAddressValid ||
+    if (!isFirstNameValid || !isAddressValid ||
       !isPhoneValid || !isCountryStateValid) {
       toast.error("Please fix the errors in the form")
       return
     }
-    console.log('isBilling',isBilling)
     // Handle update logic here
     if (AddressId) {
       if (
         formData.firstName === "" ||
-        formData.lastName === "" ||
+
         formData.address1 === "" ||
         idformdata.country_id === "" ||
         idformdata.state_id === "" ||
@@ -369,10 +343,9 @@ console.log('isBilling.......1',isBilling)
         window.location.reload();
       });
     } else if (isBilling === true) {
-      console.log('inside billing true')
       if (
         formData.firstName === "" ||
-        formData.lastName === "" ||
+
         formData.address1 === "" ||
         idformdata.country_id === "" ||
         idformdata.state_id === "" ||
@@ -405,7 +378,6 @@ console.log('isBilling.......1',isBilling)
     } else {
       if (
         formData.firstName === "" ||
-        formData.lastName === "" ||
         formData.address1 === "" ||
         idformdata.country_id === "" ||
         idformdata.state_id === "" ||
@@ -439,9 +411,6 @@ console.log('isBilling.......1',isBilling)
     }
   };
 
-  const handleCancel = (): void => {
-    // Handle cancel logic here
-  };
   const [selectedOptions, setSelectedOptions] = useState({
     country: Address
       ? {
@@ -459,6 +428,8 @@ console.log('isBilling.......1',isBilling)
       }
       : null,
   });
+
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center m-2 md:m-0">
       <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -488,9 +459,9 @@ console.log('isBilling.......1',isBilling)
         </div>
 
         <form className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
             <div className="space-y-2">
-              <label className="text-gray-700 font-medium block">First Name<span className="text-red-500">*</span></label>
+              <label className="text-gray-700 font-medium block">Full Name<span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="firstName"
@@ -501,16 +472,15 @@ console.log('isBilling.......1',isBilling)
               {formErrors.firstName && <p className="text-red-500 text-sm mt-1">{formErrors.firstName}</p>}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 hidden">
               <label className="text-gray-700 font-medium block">Last Name<span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={`border ${formErrors.lastName ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+                className={`border border-gray-300 p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
               />
-              {formErrors.lastName && <p className="text-red-500 text-sm mt-1">{formErrors.lastName}</p>}
             </div>
           </div>
 
@@ -576,7 +546,7 @@ console.log('isBilling.......1',isBilling)
             {formErrors.country && <p className="text-red-500 text-sm mt-1">{formErrors.country}</p>}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
             <div className="space-y-2">
               <label className="text-gray-700 font-medium block">State<span className="text-red-500">*</span></label>
               <Select
@@ -988,12 +958,12 @@ const AddressesPopup = (props) => {
   }
 };
 
-const CheckoutPage: React.FC<UserInfoProps> = (props) => {
+const  CheckoutPage: React.FC<UserInfoProps> =  (props) => {
+
   const { UserInfo, addressData } = props;
 
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [isdelete, setIsDelete] = useState(false);
   const [address, setAddress] = useState(null);
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
@@ -1009,17 +979,18 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
   const shippingAddressdata = useSelector(
     (store: RootState) => store.shippingAddress?.shippingAddresslist
   );
+  const [guest, setGuest] = useState(true)
 
   const [formData, setFormData] = useState({
     country: "",
     firstname: "",
     lastname: "",
-    address: "",
-    apartment: "",
+    address1: "",
+    address2: "",
     state: "",
     pinCode: "",
     phone: "",
-    userid: UserInfo?._id,
+    email: '',
   });
 
   // Dispatch the action to send data to the API
@@ -1111,6 +1082,7 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
           setDiscountCode("");
           setAppliedDiscount(0);
         }
+        // end logic
       } else {
         setNewCartItems([]);
       }
@@ -1136,6 +1108,57 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const [countryData, setCountryData] = useState(null);
   const [stateData, setStateData] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('online'); // Default to online payment
+
+
+  const [formErrors, setFormErrors] = useState({
+    firstname: "",
+    email: "",
+    lastname: "",
+    address1: "",
+    address2: "",
+    address3: "",
+    pinCode: "",
+    phone: "",
+    country: "",
+    state: ""
+  })
+
+  //  //Execute reCAPTCHA
+  const [reCaptchToken, setReCaptchToken] = useState(null);
+
+useEffect(() => {
+  const reCaptchTokenFunction = async () => {
+    const token = await window.grecaptcha.execute(SITE_KEY, {
+      action: "checkout",
+    });
+    setReCaptchToken(token);
+    console.log("recaptchToken inside useEffect", token);
+  };
+  reCaptchTokenFunction();
+}, [dispatch]);
+
+console.log('', reCaptchToken)
+
+  const [idformdata, setIdformdata] = useState(() => {
+
+    return {
+
+      state_id: "",
+    };
+  });
+  const [selectedOptions, setSelectedOptions] = useState({
+
+    state: null,
+  });
+
+
+
+
+  useEffect(() => {
+
+    dispatch(fetchStateList());
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchCountry = async () => {
@@ -1160,7 +1183,7 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
   useEffect(() => {
     const fetchState = async () => {
       const stateId = billingAddresslg?.state;
-      if (stateId) {
+      if (stateId) {recaptchToken
         try {
           const response = await dispatch(fetchStateById({ stateId })).unwrap();
           setStateData(response?.state);
@@ -1260,28 +1283,63 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
     );
   };
 
-  const calculateTotal = (): number => {
-    const subtotal = calculateSubtotal();
-    const finalAmount =
-      subtotal - appliedDiscount < 0 ? 0 : subtotal - appliedDiscount;
-    return finalAmount;
+  // Calculate online payment discount (5%)
+  const calculateOnlineDiscount = () => {
+    if (paymentMethod === 'online') {
+      const subtotalAfterCoupon = calculateSubtotal() -
+        (appliedDiscount >= calculateSubtotal() ? calculateSubtotal() : appliedDiscount);
+      return Math.round(subtotalAfterCoupon * 0.05);
+    }
+    return 0;
   };
 
+  // Calculate total with discounts
+  const calculateTotal = (): number => {
+    const subtotal = calculateSubtotal();
+    const couponDiscount = appliedDiscount >= subtotal ? subtotal : appliedDiscount;
+    const onlineDiscount = calculateOnlineDiscount();
+
+    const finalAmount = subtotal - couponDiscount - onlineDiscount;
+    return finalAmount < 0 ? 0 : finalAmount;
+  };
+
+  let shippingAddress = ''
+  let addressData1 = {}
   const createProductOrder = async () => {
     setLoading(true);
+    if (guest) {
+      const isFirstNameValid = validateFirstName(formData.firstname)
+      const isEmailValid = validateEmail(formData.email)
+      const isPinCodeValid = validatePinCode(formData.pinCode)
+      const isAddressValid = validateAddress(formData.address1)
+      const isPhoneValid = validatePhone(formData.phone)
+      const isCountryStateValid = validateCountryState()
+
+      if (!isFirstNameValid || !isAddressValid ||
+        !isPhoneValid || !isCountryStateValid || !isEmailValid || !isPinCodeValid) {
+        toast.error("Please fix the errors in the form")
+        return
+      }
+      addressData1 = JSON.stringify({
+        ...formData,
+        state: idformdata.state_id,
+      });
+    }
+    else {
+      if (addressData?.length === 0) {
+        toast.error("Please add shipping address");
+        setLoading(false);
+        return;
+      }
+      shippingAddress = addressData?.find((a: any) => a.isDefault === true);
+      if (!shippingAddress) {
+        toast.error("No default shipping address found");
+        setLoading(false);
+        return;
+      }
+    }
     const totalAmount = calculateTotal();
-
-    if (UserInfo === undefined) {
-      router.push("/login");
-      return;
-    }
-
-    if (addressData.length === 0) {
-      toast.error("Please add shipping address");
-      setLoading(false);
-      return;
-    }
-
+    console.log('total amount is ', totalAmount, 'subtotal is', calculateSubtotal())
     const products = newCartItems.map((item) => ({
       productId: item?.variations?.productId?._id,
       variantId: item?.variations?._id,
@@ -1290,30 +1348,67 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
       totalAmount: item?.variations?.special_price * item?.quantity,
     }));
 
-    const shippingAddress = addressData.find((a: any) => a.isDefault === true);
-    if (!shippingAddress) {
-      toast.error("No default shipping address found");
-      setLoading(false);
-      return;
-    }
+// Calculate coupon discount
+  const couponDiscount = appliedDiscount >= calculateSubtotal() 
+    ? calculateSubtotal() 
+    : appliedDiscount;
 
-    const orderPayload = {
+     // Calculate online payment discount
+    const onlineDiscount = calculateOnlineDiscount();
+    
+    let orderPayload = {
+    additionalDiscount: onlineDiscount,
       discount:
         appliedDiscount >= calculateSubtotal()
           ? calculateSubtotal()
           : appliedDiscount,
       amount: totalAmount,
       products,
-      shippingAddress: shippingAddress?._id,
-      billingAddress: isSameAsShipping ? shippingAddress._id : billingAddresslg,
+      shippingAddress: guest ? "" : shippingAddress?._id,
+      billingAddress: guest ? "" : (isSameAsShipping ? shippingAddress._id : billingAddresslg),
       userId: UserInfo?._id,
+      addressData: addressData1,
+      userType: guest ? "guest" : "registered",
+      discountCode,
+      paymentMethod,
+      // token: reCaptchToken,
     };
 
+    const removeEmptyFields = (obj: Record<string, any>) => {
+      return Object.fromEntries(
+        Object.entries(obj).filter(
+          ([_, value]) => value !== null && value !== undefined && value !== ""
+        )
+      );
+    };
+    // Remove empty, null, or undefined fields
+    orderPayload = removeEmptyFields(orderPayload) as {
+     discount: number;
+    onlineDiscount: number;
+      amount: number;
+      products: {
+        productId: any;
+        variantId: any;
+        specialPrice: any;
+        quantity: number | undefined;
+        totalAmount: number;
+      }[];
+      shippingAddress: any;
+      billingAddress: any;
+      userId: any;
+      addressData: {};
+      userType: string;
+      discountDetails: {
+      couponDiscount: number;
+      additionalDiscount: number;
+    };
+    };
     try {
       const resultAction = await dispatch(createOrder(orderPayload));
+      console.log('result action dara',resultAction)
       if (!resultAction?.payload?.success) {
         setLoading(false);
-        toast.error("Order creation failed!");
+        toast.error(resultAction?.payload?.message??"Order creation failed!");
         return;
       }
 
@@ -1323,7 +1418,8 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
       const userphone = shippingAddress.phone;
       const razorpayOrder = resultAction.payload?.razorpayOrder;
 
-      if (totalAmount > 0) {
+      if (totalAmount > 0 && paymentMethod === "online") {
+        // Proceed with Razorpay payment
         handleRazorpayPayment(
           razorpayOrder.id,
           orderId,
@@ -1457,157 +1553,445 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
     }
   };
 
-  return (
-    <div className="relative flex flex-col md:flex-row font-Outfit">
-      <div className="w-full md:w-1/2 flex flex-col items-center py-10 px-4 md:px-8 lg:pl-24 lg:pr-12">
-        <div className="w-full">
-          {UserInfo?.token && (
-            <h2 className="text-lg font-semibold mb-6 text-gray-800">
-              Shipping Address
-            </h2>
-          )}
-          {addressData.length === 0 ? (
-            <div className="rounded flex justify-between items-center bg-slate-100 shadow-md p-3 border">
-              <p className="text-black text-sm">
-                There is no Shipping Address!!
-              </p>
-              <button
-                className="text-white bg-red-600 p-1 text-sm px-3"
-                onClick={() => {
-                  UserInfo === undefined
-                    ? router.push("/login")
-                    : setOpen1(true);
-                }}
-              >
-                Add Now!
-              </button>
-            </div>
-          ) : (
-              <>
-                {addressData
-                  .filter((a: any) => a.isDefault === true).length === 0 ? <div className="rounded flex justify-between items-center bg-slate-100 shadow-md p-3 border">
-              <p className="text-black text-sm">
-                There is no Default Address!!
-              </p>
-              <button
-                      onClick={handleChangeAddress}
-                      className="border px-4 p-2 text-xs rounded-lg font-bold text-red-600 border-red-600"
-                    >
-                      CHANGE ADDRESS
-                    </button>
-            </div> : <>
-                
-            {addressData
-              .filter((a: any) => a.isDefault === true)
-              .map((a: any) => (
-                <div
-                  className="border border-slate-200 rounded-md flex p-4 justify-between items-center bg-red-100"
-                  key={a._id}
-                >
-                  <div>
-                    <span className="text-gray-700 text-md">Deliver to:</span>
-                    {"  "}
-                    <span className="font-bold text-black">{`${a?.firstname} ${a?.lastname}`}</span>
 
-                    <p className="text-sm my-1 text-gray-700">
-                      Phone: {a?.phonecode} {a?.phone}
-                    </p>
-                    <p className="text-sm my-1 text-gray-700">{a?.address1}</p>
-                    <p className="text-sm my-1 text-gray-700">{a?.address2}</p>
-                    <p className="text-sm my-1 text-gray-700">
-                      {a?.state?.name} {a?.country?.name} {a?.pincode}
-                    </p>
-                  </div>
-                  <div>
-                    <button
-                      onClick={handleChangeAddress}
-                      className="border px-4 p-2 text-xs rounded-lg font-bold text-red-600 border-red-600"
-                    >
-                      CHANGE ADDRESS
-                    </button>
-                  </div>
-                </div>
-              ))}
+  //for  guest form data
+  const validateFirstName = (name: string) => {
+    if (!name.trim()) {
+      setFormErrors(prev =>
+        ({ ...prev, firstname: "Name is required" }))
+      setLoading(false)
+      return false
+    }
+
+    if (name.length < 2) {
+      setFormErrors(prev =>
+        ({ ...prev, firstname: "Name must be at least 2 characters" }))
+      setLoading(false)
+
+      return false
+    }
+
+    setFormErrors(prev => ({ ...prev, firstname: "" }))
+    return true
+  }
+  const validateEmail = (email: string) => {
+    if (!email.trim()) {
+      setFormErrors(prev =>
+        ({ ...prev, email: "Email is required" }))
+      setLoading(false)
+
+      return false
+    }
+
+    // Basic email regex pattern
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setFormErrors(prev => ({ ...prev, email: "Invalid email format" }));
+      setLoading(false)
+
+      return false;
+    }
+    if (email.includes(" ")) {
+      setFormErrors(prev =>
+        ({ ...prev, email: "Email cannot contain spaces" }))
+      setLoading(false)
+
+      return false
+    }
+
+
+    setFormErrors(prev => ({ ...prev, email: "" }))
+    return true
+  }
+
+
+  const validatePhone = (phone: string) => {
+    if (!phone.trim()) {
+      setFormErrors(prev => ({ ...prev, phone: "Phone is Required" }))
+      setLoading(false)
+
+      return false
+    }
+
+    // Basic phone validation (allows various formats)
+    const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/
+    if (!phoneRegex.test(phone)) {
+      setFormErrors(prev => ({ ...prev, phone: "Please enter a valid phone number" }))
+      setLoading(false)
+
+      return false
+    }
+
+    setFormErrors(prev => ({ ...prev, phone: "" }))
+    return true
+  }
+
+  const validateAddress = (address) => {
+    if (!address.trim()) {
+      setFormErrors(prev => ({ ...prev, address1: "Address is required" }))
+      setLoading(false)
+
+      return false
+    }
+
+    if (address.length < 5) {
+      setFormErrors(prev => ({ ...prev, address1: "Please enter a complete address" }))
+      setLoading(false)
+
+      return false
+    }
+
+    setFormErrors(prev => ({ ...prev, address1: "" }))
+    return true
+  }
+
+  const validateCountryState = () => {
+    let isValid = true
+
+
+    if (!idformdata.state_id) {
+      setFormErrors(prev => ({ ...prev, state: "Please select a state" }))
+      setLoading(false)
+
+      isValid = false
+    } else {
+      setFormErrors(prev => ({ ...prev, state: "" }))
+    }
+
+    return isValid
+  }
+  const validatePinCode = (pinCode: string) => {
+    if (!pinCode.trim()) {
+      setFormErrors(prev => ({ ...prev, pinCode: "Pin Code is required" }))
+      setLoading(false)
+
+      return false
+    }
+    if (pinCode.includes(" ")) {
+      setFormErrors(prev => ({ ...prev, pinCode: "Pin Code cannot contain spaces" }));
+      setLoading(false)
+
+      return false;
+    }
+    const pinCodeRegex = /^[0-9]{6}$/;
+    if (!pinCodeRegex.test(pinCode)) {
+      setFormErrors(prev => ({ ...prev, pinCode: "Pin Code must be exactly 6 digits" }));
+      setLoading(false)
+
+      return false;
+    }
+    setFormErrors(prev => ({ ...prev, pinCode: "" }))
+    return true
+  }
+  const handleChange = (e: any): void => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+
+
+    // Validate the field as the user types
+    if (name === "firstname") validateFirstName(value)
+    if (name === "email") validateEmail(value)
+    if (name === "address1") validateAddress(value)
+    if (name === "phone") validatePhone(value)
+    if (name === "pinCode") validatePinCode(value)
+  };
+
+  return (
+    <div className="relative flex flex-col md:flex-row font-Outfit mx-auto container">
+      {guest ? (<div className="w-full md:w-1/2 flex flex-col px-4 md:px-10 item-center mx-auto  py-10">
+
+        <form className="space-y-5">
+          <div className="grid grid-cols-1 gap-5">
+            <div className="">
+              <label className="text-gray-700 font-medium block">Your Name<span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                className={`border ${formErrors.firstname ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+              />
+              {formErrors.firstname && <p className="text-red-500 text-sm mt-1">{formErrors.firstname}</p>}
+            </div>
+
+            <div className=" hidden">
+              <label className="text-gray-700 font-medium block">Last Name<span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                className={`border ${formErrors.lastname ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+              />
+              {formErrors.lastname && <p className="text-red-500 text-sm mt-1">{formErrors.lastname}</p>}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div className="">
+              <label className="text-gray-700 font-medium block">Phone<span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`border ${formErrors.phone ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+              />
+              {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
+            </div>
+            <div className="">
+              <label className="text-gray-700 font-medium block">Email<span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                name="email"
+                value={formData?.email}
+                onChange={handleChange}
+                className={`border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+              />
+              {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
+            </div>
+          </div>
+
+          <div className="">
+            <label className="text-gray-700 font-medium block">Address Line 1<span className="text-red-500">*</span></label>
+            <input
+              type="text"
+              name="address1"
+              value={formData.address1}
+              onChange={handleChange}
+              className={`border ${formErrors.address1 ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+            />
+            {formErrors.address1 && <p className="text-red-500 text-sm mt-1">{formErrors.address1}</p>}
+          </div>
+
+          <div className="">
+            <label className="text-gray-700 font-medium block">Address Line 2</label>
+            <input
+              type="text"
+              name="address2"
+              value={formData.address2}
+              onChange={handleChange}
+              className={`border ${formErrors.address2 ? 'border-red-500' : 'border-gray-300'} p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all`}
+            />
+            {formErrors.address2 && <p className="text-red-500 text-sm mt-1">{formErrors.address2}</p>}
+          </div>
+
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
+           
+          </div> */}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="">
+              <label className="text-gray-700 font-medium block">State<span className="text-red-500">*</span></label>
+              <Select
+                className={`text-gray-800 rounded-lg ${formErrors.state ? 'border-red-500' : ''}`}
+                classNamePrefix="select"
+                name="state"
+                value={selectedOptions.state}
+                options={StateListState?.data?.map((state: any) => ({
+                  value: { stateid: state.id, state_id: state._id },
+                  label: state.name,
+                }))}
+                onChange={(selected: any) => {
+                  setSelectedOptions((prev) => ({
+                    ...prev,
+                    state: selected,
+                  }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    state: selected?.value.state_id || "",
+                  }))
+                  setIdformdata((prev) => ({
+                    ...prev,
+                    state_id: selected?.value.state_id || "",
+                  }))
+                  // Clear error when a selection is made
+                  setFormErrors(prev => ({ ...prev, state: "" }))
+                }}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    padding: "4px",
+                    borderRadius: "0.5rem",
+                    borderColor: formErrors.state ? "#ef4444" : "#d1d5db",
+                  }),
+                }}
+              />
+              {formErrors.state && <p className="text-red-500 text-sm mt-1">{formErrors.state}</p>}
+            </div>
+            <div className="">
+              <label className="text-gray-700 font-medium block">Postal/Zip Code<span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                name="pinCode"
+                value={formData.pinCode}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-full text-gray-800 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
+              />
+              {formErrors.pinCode && <p className="text-red-500 text-sm mt-1">{formErrors.pinCode}</p>}
+            </div>
+
+
+          </div>
+
+        </form>
+      </div>
+      ) : (
+
+        <div className="w-full md:w-1/2 flex flex-col items-center py-10 px-4 md:px-8 lg:pl-24 lg:pr-12">
+          <div className="w-full">
+            {UserInfo?.token && (
+              <h2 className="text-lg font-semibold mb-6 text-gray-800">
+                Shipping Address
+              </h2>
+            )}
+            {addressData?.length === 0 ? (
+              <div className="rounded flex justify-between items-center bg-slate-100 shadow-md p-3 border">
+                <p className="text-black text-sm">
+                  There is no Shipping Address!!
+                </p>
+                <button
+                  className="text-white bg-red-600 p-1 text-sm px-3"
+                  onClick={() => {
+                    UserInfo === undefined
+                      ? router.push("/login")
+                      : setOpen1(true);
+                  }}
+                >
+                  Add Now!
+                </button>
+              </div>
+            ) : (
+              <>
+                {addressData?.filter((a: any) => a.isDefault === true).length === 0 ? <div className="rounded flex justify-between items-center bg-slate-100 shadow-md p-3 border">
+                  <p className="text-black text-sm">
+                    There is no Default Address!!
+                  </p>
+                  <button
+                    onClick={handleChangeAddress}
+                    className="border px-4 p-2 text-xs rounded-lg font-bold text-red-600 border-red-600"
+                  >
+                    CHANGE ADDRESS
+                  </button>
+                </div> : <>
+
+                  {addressData?.filter((a: any) => a.isDefault === true)
+                    .map((a: any) => (
+                      <div
+                        className="border border-slate-200 rounded-md flex p-4 justify-between items-center bg-red-100"
+                        key={a._id}
+                      >
+                        <div>
+                          <span className="text-gray-700 text-md">Deliver to:</span>
+                          {"  "}
+                          <span className="font-bold text-black">{`${a?.firstname} ${a?.lastname}`}</span>
+
+                          <p className="text-sm my-1 text-gray-700">
+                            Phone: {a?.phonecode} {a?.phone}
+                          </p>
+                          <p className="text-sm my-1 text-gray-700">{a?.address1}</p>
+                          <p className="text-sm my-1 text-gray-700">{a?.address2}</p>
+                          <p className="text-sm my-1 text-gray-700">
+                            {a?.state?.name} {a?.country?.name} {a?.pincode}
+                          </p>
+                        </div>
+                        <div>
+                          <button
+                            onClick={handleChangeAddress}
+                            className="border px-4 p-2 text-xs rounded-lg font-bold text-red-600 border-red-600"
+                          >
+                            CHANGE ADDRESS
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                 </>
-              }
+                }
               </>
+            )}
+          </div>
+
+          {/* Billing Address */}
+          {addressData?.filter((a: any) => a.isDefault === true)?.length > 0 && (
+            <div className="w-full mt-14">
+              <h1 className="text-lg font-semibold mb-6 text-gray-800">
+                Billing Address
+              </h1>
+              <div className="space-y-4">
+                <div className="flex border border-gray-300 rounded-md py-3 px-2 gap-8">
+                  <input
+                    type="checkbox"
+                    checked={isSameAsShipping || Object.keys(billingAddresslg).length == 0}
+                    onChange={handleCheckboxChange}
+                  />
+                  <p className="text-gray-400">Same as Shipping Address</p>
+                </div>
+              </div>
+
+              {/* Show form only when checkbox is unchecked */}
+              {isClient &&
+                Object.keys(billingAddresslg).length !== 0 &&
+                !isSameAsShipping && (
+                  <div className="my-4 border border-slate-200 rounded-md flex p-4 justify-between items-center bg-red-100">
+                    <div>
+                      <span className="text-gray-700 text-md">Deliver to:</span>
+                      {"  "}
+                      <span className="font-bold text-black">{`${billingAddresslg?.firstname} ${billingAddresslg?.lastname}`}</span>
+
+                      <p className="text-sm my-1 text-gray-700">
+                        Phone: {billingAddresslg?.phone}
+                      </p>
+                      <p className="text-sm my-1 text-gray-700">
+                        {billingAddresslg?.address1}
+                      </p>
+                      <p className="text-sm my-1 text-gray-700">
+                        {billingAddresslg?.address2}
+                      </p>
+                      <p className="text-sm my-1 text-gray-700">
+                        {stateData?.name} {countryData?.name}{" "}
+                        {billingAddresslg?.pincode}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              {!isSameAsShipping && (
+                <AddressFormPopup
+                  isOpen={isPopupOpen}
+                  onClose={(x: any) => {
+                    setIsPopupOpen(!isPopupOpen);
+                    if (x === 0) {
+                      setIsSameAsShipping(true);
+                      try {
+                        localStorage.removeItem("billingaddressstatus");
+                      } catch (error) {
+                        console.error("Error removing from localStorage:", error);
+                      }
+                    }
+                  }}
+                  isEditing={isEditing}
+                  userId={UserInfo?._id}
+                  Address={address}
+                  isBilling={!isSameAsShipping}
+                />
+              )}
+              <Link href="/shop" className="flex items-center gap-2 mt-5">
+                <FaAngleLeft className="text-red-800 text-sm" />
+                <p className="text-red-800 text-sm"> Shop more</p>
+              </Link>
+            </div>
           )}
         </div>
-
-        {/* Billing Address */}
-        {addressData.length !== 0 && (
-          <div className="w-full mt-14">
-            <h1 className="text-lg font-semibold mb-6 text-gray-800">
-              Billing Address
-            </h1>
-            <div className="space-y-4">
-              <div className="flex border border-gray-300 rounded-md py-3 px-2 gap-8">
-                <input
-                  type="checkbox"
-                  checked={isSameAsShipping || Object.keys(billingAddresslg).length == 0}
-                  onChange={handleCheckboxChange}
-                />
-                <p className="text-gray-400">Same as Shipping Address</p>
-              </div>
-            </div>
-
-            {/* Show form only when checkbox is unchecked */}
-            {isClient &&
-              Object.keys(billingAddresslg).length !== 0 &&
-              !isSameAsShipping && (
-                <div className="my-4 border border-slate-200 rounded-md flex p-4 justify-between items-center bg-red-100">
-                  <div>
-                    <span className="text-gray-700 text-md">Deliver to:</span>
-                    {"  "}
-                    <span className="font-bold text-black">{`${billingAddresslg?.firstname} ${billingAddresslg?.lastname}`}</span>
-
-                    <p className="text-sm my-1 text-gray-700">
-                      Phone: {billingAddresslg?.phone}
-                    </p>
-                    <p className="text-sm my-1 text-gray-700">
-                      {billingAddresslg?.address1}
-                    </p>
-                    <p className="text-sm my-1 text-gray-700">
-                      {billingAddresslg?.address2}
-                    </p>
-                    <p className="text-sm my-1 text-gray-700">
-                      {stateData?.name} {countryData?.name}{" "}
-                      {billingAddresslg?.pincode}
-                    </p>
-                  </div>
-                </div>
-              )}
-            {!isSameAsShipping && (
-              <AddressFormPopup
-                isOpen={isPopupOpen}
-                onClose={(x: any) => {
-                  setIsPopupOpen(!isPopupOpen);
-                  if (x === 0) {
-                    setIsSameAsShipping(true);
-                    try {
-                      localStorage.removeItem("billingaddressstatus");
-                    } catch (error) {
-                      console.error("Error removing from localStorage:", error);
-                    }
-                  }
-                }}
-                isEditing={isEditing}
-                userId={UserInfo?._id}
-                Address={address}
-                isBilling={!isSameAsShipping}
-              />
-            )}
-            <Link href="/shop" className="flex items-center gap-2 mt-5">
-              <FaAngleLeft className="text-red-800 text-sm" />
-              <p className="text-red-800 text-sm"> Shop more</p>
-            </Link>
-          </div>
-        )}
-      </div>
+      )}
 
       <div className="w-full md:w-1/2 bg-slate-50 py-10">
         <div className="">
-          <div className="w-11/12 mx-auto px-6 bg-slate-50">
+          <div className="w-11/12 mx-auto px-4 bg-slate-50">
             {newCartItems.map((item, index) => (
               <div
                 key={index}
@@ -1688,23 +2072,65 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
                 {appliedDiscount > 0 && (
                   <div className="flex justify-between">
                     <p className="text-gray-700">Discount</p>
-                    <p className="text-gray-400">
-                      ₹
+                    <p className="text-green-600">
+                      -₹
                       {appliedDiscount >= calculateSubtotal()
                         ? calculateSubtotal()
                         : appliedDiscount}
                     </p>
                   </div>
                 )}
+                {paymentMethod === 'online' && (
+                  <div className="flex justify-between">
+                    <p className="text-gray-700">Additional Discount (5%)</p>
+                    <p className="text-green-600">
+                      -₹{calculateOnlineDiscount()}
+                    </p>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <p className="text-gray-700">Shipping</p>
-                  <p className="text-gray-400">Free</p>
+                  <p className="text-green-600">Free</p>
                 </div>
+               
               </div>
 
               <div className="border-t mt-4 pt-4 flex justify-between text-lg font-bold">
                 <p className="text-gray-700">Total</p>
                 <p className="text-gray-400">₹{calculateTotal()}</p>
+              </div>
+            </div>
+            <div className="mt-6 border-t pt-4">
+              <h3 className="font-medium text-gray-800 mb-3">Payment Method</h3>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="online-payment"
+                    name="payment-method"
+                    value="online"
+                    checked={paymentMethod === 'online'}
+                    onChange={() => setPaymentMethod('online')}
+                    className="mr-2"
+                  />
+                  <label htmlFor="online-payment" className="text-gray-700">
+                    Pay Online (Get additional 5% discount)
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="cod-payment"
+                    name="payment-method"
+                    value="cod"
+                    checked={paymentMethod === 'cod'}
+                    onChange={() => setPaymentMethod('cod')}
+                    className="mr-2"
+                  />
+                  <label htmlFor="cod-payment" className="text-gray-700">
+                    Cash on Delivery
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -1734,7 +2160,7 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
                   Processing...
                 </div>
               ) : (
-                "Pay Now"
+                paymentMethod === 'online' ? "Pay Now" : "Place Order (Cash on Delivery)"
               )}
             </button>
           </div>
@@ -1753,6 +2179,8 @@ const CheckoutPage: React.FC<UserInfoProps> = (props) => {
         isBilling={false}
         onClose={() => setOpen1(false)}
         userId={UserInfo?._id}
+        Address={null} // Pass a default value for Address
+
       />
     </div>
   );

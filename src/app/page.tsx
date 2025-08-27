@@ -20,7 +20,14 @@ import {
   getCategoriesData,
   getHomeCategoriesData,
 } from "../lib/repos/categoriesRepo";
+export async function generateMetadata() {
 
+  return {
+    title: "Dubblin - Stylish Kitchenware & Home Essentials",
+    description: "Shop stylish and durable kitchenware, bottles, lunch boxes, and home essentials at Dubblin. Modern designs crafted for everyday use and long-lasting quality.",
+    tags: "homeware online, premium kitchenware, stainless steel bottles, insulated lunch boxes, modern serveware, home storage solutions, Dubblin products, kitchen accessories India",
+  };
+}
 const Home = async () => {
   const data = await getSales();
 

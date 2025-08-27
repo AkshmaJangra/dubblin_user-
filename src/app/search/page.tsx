@@ -213,7 +213,7 @@ const Page: React.FC = () => {
           {/* Sidebar content */}
           <div className="text-left mb-20 w-full lg:w-full ">
             {/* Categories - Fixed at the top */}
-            <div className="sticky top-0  bg-white lg:bg-gray-50 h-20 z-20   flex justify-between items-center">
+            <div className="sticky top-0  bg-white lg:bg-gray-50 h-20 z-50   flex justify-between items-center">
               <h2 className="text-2xl font-semibold p-4 text-gray-800">
                 Filter
               </h2>
@@ -602,7 +602,7 @@ const Page: React.FC = () => {
       {/* Overlay for small screens when sidebar is open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}

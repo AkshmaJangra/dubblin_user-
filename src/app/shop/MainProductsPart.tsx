@@ -401,7 +401,7 @@ useEffect(() => {
         <div
           className={`${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:static left-0  top-0 h-full lg:h-auto z-50 md:z-30 bg-white lg:bg-gray-50 overflow-y-auto lg:overflow-visible  w-72  lg:p-4 shadow-lg lg:shadow-none`}
+          } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:static left-0  top-0 h-full lg:h-auto z-50 bg-white lg:bg-gray-50 overflow-y-auto lg:overflow-visible  w-72  lg:p-4 shadow-lg lg:shadow-none`}
         >
           {/* Sidebar content */}
           <div className=" relative text-left mb-20 w-full lg:w-full ">
@@ -543,7 +543,7 @@ useEffect(() => {
 
             {/* Sort options */}
             <div
-              className=" h-10 w-10 rounded-full bg-gray-200 z-30 flex items-center justify-center border-2 lg:hidden fixed left-3 top-64"
+              className=" h-10 w-10 rounded-full bg-gray-200 z-10 flex items-center justify-center border-2 lg:hidden fixed left-3 top-64"
               style={{ bottom: "5.5rem" }}
             >
               <button className="text-black " onClick={toggleSidebar}>
@@ -591,7 +591,7 @@ useEffect(() => {
       {/* Overlay for small screens when sidebar is open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
           onClick={toggleSidebar}
         ></div>
       )}

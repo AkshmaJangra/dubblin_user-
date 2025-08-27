@@ -72,7 +72,7 @@ const Shop: React.FC<ProductProps> = ({
         <div className="absolute inset-0 bg-black/50" />
 
         {/* Content */}
-        <div className="relative z-10 text-white p-12 sm:p-8 md:p-20">
+        <div className="relative text-white p-12 sm:p-8 md:p-20">
           <div className="flex items-center text-sm sm:text-base"></div>
           <div className="text-xl sm:text-2xl md:text-4xl  text-center">
             {singleCategory?.name ?? "Shop"}

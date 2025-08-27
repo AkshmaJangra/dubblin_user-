@@ -61,6 +61,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, account, user }) {
+      console.log('account', account);
       // If user signs in with Google, send token to backend
       if (account && account.provider === "google") {
         try {

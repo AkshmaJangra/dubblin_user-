@@ -211,7 +211,7 @@ const Page: React.FC = () => {
           } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:static left-0  top-0 h-full lg:h-auto z-40 bg-white lg:bg-gray-50 overflow-y-auto lg:overflow-visible  w-72  lg:p-4 shadow-lg lg:shadow-none`}
         >
           {/* Sidebar content */}
-          <div className="text-left mb-20 w-full lg:w-full ">
+          <div className="text-left mb-20 w-full z-50 lg:w-full ">
             {/* Categories - Fixed at the top */}
             <div className="sticky top-0  bg-white lg:bg-gray-50 h-20 z-20   flex justify-between items-center">
               <h2 className="text-2xl font-semibold p-4 text-gray-800">
@@ -423,7 +423,6 @@ const Page: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <hr className="mt-5 w-full border-t-2" />
 
               {/* Color */}
@@ -573,7 +572,7 @@ const Page: React.FC = () => {
       {/* Overlay for small screens when sidebar is open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}

@@ -9,39 +9,78 @@ export default function Cards({ product }) {
   // const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const router = useRouter();
 
+
   // Maintain original price calculation logic
-  let mrp = 0;
-  let maxprice = 0;
-  let minprice = 0;
-  if (product?.productype === "variableproduct") {
-    if (product?.variants?.length > 1) {
-      const prices = product.variants.map(
-        (variant) => variant.special_price || 0
-      );
+  // let mrp = 0;
+  // let maxprice = 0;
+  // let minprice = 0;
+  // if (product?.productype === "variableproduct") {
+  //   if (product?.variants?.length > 1) {
+  //     const prices = product.variants.map(
+  //       (variant) => variant.special_price || 0
+  //     );
 
-      mrp = Math.max(...prices);
-      maxprice = Math.max(...prices);
-      minprice = Math.min(...prices);
-    } else {
-      mrp = product?.variants[0]?.price;
-      maxprice = product?.variants[0]?.special_price;
-      minprice = product?.variants[0]?.special_price;
-    }
-  } else {
-    mrp = product?.variants[0]?.price;
-    maxprice = product?.variants[0]?.special_price;
-    minprice = product?.variants[0]?.special_price;
-  }
+  //     mrp = Math.max(...prices);
+  //     maxprice = Math.max(...prices);
+  //     minprice = Math.min(...prices);
+  //   } else {
+  //     mrp = product?.variants[0]?.price;
+  //     maxprice = product?.variants[0]?.special_price;
+  //     minprice = product?.variants[0]?.special_price;
+  //   }
+  // } else {
+  //   mrp = product?.variants[0]?.price;
+  //   maxprice = product?.variants[0]?.special_price;
+  //   minprice = product?.variants[0]?.special_price;
+  // }
 
-  let discount = 0;
-  if (
-    product?.productype === "variableproduct" &&
-    product?.variants?.length > 1
-  ) {
-    discount = 0;
-  } else {
-    discount = mrp > minprice ? Math.round(((mrp - minprice) / mrp) * 100) : 0;
-  }
+  // let discount = 0;
+  // if (
+  //   product?.productype === "variableproduct" &&
+  //   product?.variants?.length > 1
+  // ) {
+  //   discount = 0;
+  // } else {
+  //   discount = mrp > minprice ? Math.round(((mrp - minprice) / mrp) * 100) : 0;
+  // }
+
+ // Calculate prices and discounts
+ let minPrice = 0;
+ let originalPrice = 0;
+ let discount = 0;
+
+ if (product?.productype === "variableproduct") {
+   if (product?.variants?.length > 1) {
+     
+     const variantsWithPrices = product.variants.filter(v => v.special_price && v.special_price > 0);
+     
+     if (variantsWithPrices.length > 0) {
+       
+       const sortedVariants = [...variantsWithPrices].sort((a, b) => 
+         (a.special_price || 0) - (b.special_price || 0)
+       );
+      
+       const lowestPriceVariant = sortedVariants[0];
+       minPrice = lowestPriceVariant.special_price;
+       originalPrice = lowestPriceVariant.price;
+    
+       discount = originalPrice > minPrice ? 
+         Math.round(((originalPrice - minPrice) / originalPrice) * 100) : 0;
+     }
+   } else if (product?.variants?.length === 1) {
+     
+     minPrice = product.variants[0]?.special_price;
+     originalPrice = product.variants[0]?.price;
+     discount = originalPrice > minPrice ? 
+       Math.round(((originalPrice - minPrice) / originalPrice) * 100) : 0;
+   }
+ } else {
+
+   minPrice = product?.variants[0]?.special_price;
+   originalPrice = product?.variants[0]?.price;
+   discount = originalPrice > minPrice ? 
+     Math.round(((originalPrice - minPrice) / originalPrice) * 100) : 0;
+ }
 
   const handleNavigate = () => {
     router.push(`/product/${product?.slug}`);
@@ -135,30 +174,22 @@ export default function Cards({ product }) {
 
         {/* Price Section */}
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            {product?.productype === "variableproduct" &&
-            product?.variants?.length > 1 ? (
-              <div className="text-base font-bold text-gray-900">
-                {minprice === maxprice ? (
-                  <>₹{minprice?.toFixed(2)}</>
-                ) : (
-                  <>
-                    ₹{minprice?.toFixed(2)} - ₹{maxprice?.toFixed(2)}
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-baseline gap-2">
-                <span className="text-base font-bold text-gray-900">
-                  ₹{minprice?.toFixed(2)}
+          <div>
+            <div className="flex flex-wrap items-baseline gap-1">
+              <span className="md:text-lg text-base font-bold text-gray-900">
+                ₹{minPrice?.toFixed(2)}
+              </span>
+              {discount > 0 && (
+                <>
+                <span className="text-gray-500 text-sm line-through">
+                ₹{originalPrice}
                 </span>
-                {mrp > minprice && (
-                  <span className="text-xs text-gray-500 line-through">
-                    ₹{mrp?.toFixed(2)}
+                  <span className="text-lg font-medium text-[#AA0A30]">
+                    {discount}% off
                   </span>
-                )}
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
 
           {/* Add to Cart Button (Replacing Rating) */}
