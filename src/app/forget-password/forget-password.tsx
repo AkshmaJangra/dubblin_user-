@@ -17,7 +17,7 @@ import { forgotPassword } from "../../lib/AllSlices/userauthSlice";
 import { useRouter } from "next/navigation";
 import ReCAPTCHA from "react-google-recaptcha";
 
-const ForgetPassword: React.FC = ({ data }) => {
+const ForgetPassword: React.FC = ({ data }:any) => {
   const dispatch = useAppDispatch();
   let SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_APP_SITE_KEY || "";
 
